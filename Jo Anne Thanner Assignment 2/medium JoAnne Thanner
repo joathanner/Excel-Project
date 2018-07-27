@@ -1,0 +1,65 @@
+Sub medium()
+
+' set variable
+
+Dim Total As Double
+Dim counter As Long
+Dim lastrow As Long
+Dim sheet As Worksheet
+Dim rowcount As Integer
+
+
+
+'loop through all sheets
+
+For Each sheet In Worksheets
+    Dim openyear As Double
+    Dim closeyeaCounter As Double 
+    Dim yearlychange As Double 
+    Dim percentage As String
+
+'set last row   
+   lastrow = sheet.Cells(Rows.count, 1).End(xlUp).Row
+
+   sheet.Cells(1, 9).Value = "Ticker"
+   sheet.Cells(1, 12).Value = "Total stock vol"
+   sheet.Cells(1, 10).Value = "yearly change"
+   sheet.Cells(1, 11).Value = "yearly %change"
+
+'set counter
+   counter = 2
+   openyear = sheet.Cells(2, 3).Value
+   
+   For i = 2 To lastrow
+   
+       If sheet.Cells(i, 1).Value = sheet.Cells(i + 1, 1).Value Then
+           Total = Total + sheet.Cells(i, 7).Value
+           
+           Else
+           
+           Total = Total + sheet.Cells(i, 7).Value
+           sheet.Cells(counter, 9).Value = sheet.Cells(i, 1).Value
+           sheet.Cells(counter, 12).Value = Total
+           closeyear = sheet.Cells(i, 6).Value
+           yearlychange = closeyear - openyear
+           sheet.Cells(counter, 10).Value = yearlychange
+           percentage = FormatPercent((yearlychange / openyear), , , vbTrue)
+           sheet.Cells(counter, 11).Value = percentage
+           openyear = sheet.Cells(i + 1, 3).Value
+           
+           'change color
+           If sheet.Cells(counter, 10).Value >= 0 Then
+           sheet.Range("j" & counter).Interior.ColorIndex = 4
+           
+               Else
+               sheet.Range("j" & counter).Interior.ColorIndex = 3
+               
+           End If
+           counter = counter + 1
+       
+       End If
+   Next i
+
+Next sheet
+
+End Sub
